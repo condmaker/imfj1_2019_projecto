@@ -53,6 +53,7 @@ The assignment for the course is as follows:
 * Project has to be delivered up 20th January 2020 (midnight), and link delivered on the course's Moodle page
   - Deliverables have to include a link to the Github repo
     - If you want to use a private repository, instead of a public one, you can deliver all the files in a .zip file, __**INCLUDING**__ the .git directory for git usage analysis 
+  - Only one student in the group need to turn in the project
   - Project has to include a report, in a `readme.md` file. This report has to include the work done on the project, and the individual contributions of the group.
   - Report should also include (besides the names and numbers of students), their Github account username.
   - Report has to be formated in Markdown, as taught on the November workshop.
@@ -80,6 +81,15 @@ Although not needed, to avoid some warnings on application startup, you can inst
 If pip is not available on the command line, you can try to invoke it through the module interface on Python:
 
 * `python -m pip install <name of package>`
+
+There might be some issues with installing numpy and numpy-quaternion, due to a C compiler not being available in the path.
+If that happens, you can try download a binary version of the library (called a wheel) and install it manually.
+
+You can download the wheels for Numpy from `https://pypi.org/project/numpy/#files`. Choose the appropriate version for your OS and Python version (cp36 for Python 3.6, cp37 for Python 3.7, etc). For example, 64-bit Windows 10 for Python 3.6 is the file `numpy-1.17.4-cp35-cp35m-win_amd64.whl`.
+
+For numpy-quaternion, you can get the files from `https://www.lfd.uci.edu/~gohlke/pythonlibs/`. Same naming scheme is used, so the file for 64-bit Windows 10 for Python 3.6 is the file `numpy_quaternion‑2019.12.12‑cp36‑cp36m‑win_amd64.whl`.
+
+To install a wheel manually, you just have to run the command: `pip install <wheel name>` or `python -m pip install <wheel name>` from the directory where the wheel was downloaded to.
 
 ## Work on the project
 

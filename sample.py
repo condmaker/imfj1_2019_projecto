@@ -32,6 +32,7 @@ def main():
     # This cube has 1 unit of side, and is red
     obj1 = Object3d("TestObject")
     obj1.scale = vector3(1, 1, 1)
+    obj1.position = vector3(0, -1, 0)
     obj1.mesh = Mesh.create_cube((1, 1, 1))
     obj1.material = Material(color(1,0,0,1), "TestMaterial1")
     scene.add_object(obj1)
@@ -53,6 +54,9 @@ def main():
     # Timer
     delta_time = 0
     prev_time = time.time()
+
+    pygame.mouse.set_visible(False)
+    pygame.event.set_grab(True)
 
     # Game loop, runs forever
     while (True):

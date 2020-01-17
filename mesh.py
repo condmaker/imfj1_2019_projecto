@@ -24,8 +24,8 @@ class Mesh:
             for v in poly:
                 vout = v.to_np4()
                 vout = vout @ matrix
-#                tpoly.append( ( 320 + 320 * vout[0] / vout[3], 240 + 240 * vout[1] / vout[3]) )
-                tpoly.append( ( screen.get_width() * 0.5 + vout[0] / vout[3], screen.get_height() * 0.5 + vout[1] / vout[3]) )
+                
+                tpoly.append( ( screen.get_width() * 0.5 + vout[0] / vout[3], screen.get_height() * 0.5 - vout[1] / vout[3]) )
 
             pygame.draw.polygon(screen, c, tpoly, material.line_width)
 
@@ -35,14 +35,14 @@ class Mesh:
         if (mesh == None):
             mesh = Mesh("UnknownCube")
 
-        Mesh.create_quad(vector3( size[0] * 0.5, 0, 0), vector3(0, size[1] * 0.5, 0), vector3(0, 0, size[2] * 0.5), mesh)
-        Mesh.create_quad(vector3(-size[0] * 0.5, 0, 0), vector3(0, size[1] * 0.5, 0), vector3(0, 0, size[2] * 0.5), mesh)
+        Mesh.create_quad(vector3( size[0] * 0.5, 0, 0), vector3(0, -size[1] * 0.5, 0), vector3(0, 0, size[2] * 0.5), mesh)
+        Mesh.create_quad(vector3(-size[0] * 0.5, 0, 0), vector3(0,  size[1] * 0.5, 0), vector3(0, 0, size[2] * 0.5), mesh)
 
         Mesh.create_quad(vector3(0,  size[1] * 0.5, 0), vector3(size[0] * 0.5, 0), vector3(0, 0, size[2] * 0.5), mesh)
-        Mesh.create_quad(vector3(0, -size[1] * 0.5, 0), vector3(size[0] * 0.5, 0), vector3(0, 0, size[2] * 0.5), mesh)
+        Mesh.create_quad(vector3(0, -size[1] * 0.5, 0), vector3(-size[0] * 0.5, 0), vector3(0, 0, size[2] * 0.5), mesh)
 
-        Mesh.create_quad(vector3(0, 0,  size[2] * 0.5), vector3(size[0] * 0.5, 0), vector3(0, size[1] * 0.5, 0), mesh)
-        Mesh.create_quad(vector3(0, 0, -size[2] * 0.5), vector3(size[0] * 0.5, 0), vector3(0, size[1] * 0.5, 0), mesh)
+        Mesh.create_quad(vector3(0, 0,  size[2] * 0.5), vector3(-size[0] * 0.5, 0), vector3(0, size[1] * 0.5, 0), mesh)
+        Mesh.create_quad(vector3(0, 0, -size[2] * 0.5), vector3( size[0] * 0.5, 0), vector3(0, size[1] * 0.5, 0), mesh)
 
         return mesh
 

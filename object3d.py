@@ -6,7 +6,7 @@ class Object3d:
     def __init__(self, name):
         self.name = name
         self.position = vector3()
-        self.rotation = quaternion(0,0,0,1)
+        self.rotation = quaternion(1,0,0,0)
         self.scale = vector3(1,1,1)
         self.mesh = None
         self.material = None
@@ -28,6 +28,18 @@ class Object3d:
 
     def add_child(self, obj):
         self.children.append(obj)
+
+    def get_position(self):
+        return vector3.from_np(vector3(0,0,0).to_np4(1) @ self.get_matrix())
+
+    def forward(self):
+        return vector3.from_np(vector3(0,0,1).to_np4(0) @ self.get_matrix())
+
+    def up(self):
+        return vector3.from_np(vector3(0,1,0).to_np4(0) @ self.get_matrix())
+
+    def right(self):
+        return vector3.from_np(vector3(1,0,0).to_np4(0) @ self.get_matrix())
 
     @staticmethod
     def get_prs_matrix(position, rotation, scale):
