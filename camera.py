@@ -8,7 +8,7 @@ class Camera(Object3d):
         self.ortho = ortho
         self.res_x = res_x
         self.res_y = res_y
-        self.fov = math.radians(60)
+        self.fov = math.radians(30)
 
     def get_projection_matrix(self):
         self.proj_matrix = np.zeros((4, 4))
