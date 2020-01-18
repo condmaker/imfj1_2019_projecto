@@ -11,6 +11,8 @@ from color import *
 def main():
     pygame.init()
 
+    mouseSens = 25
+
     res_x = 1080
     res_y = 720
 
@@ -62,6 +64,35 @@ def main():
 
         movementSpeed = 0.01
 
+        #axis = vector3(0,0,0)
+
+        pygame.mouse.set_visible(True)
+        pygame.event.set_grab(True)
+
+        if(pygame.mouse.get_pos()[0] < res_x / 2):
+            axis += vector3(0,mouseSens,0)
+            pygame.mouse.set_pos((res_x / 2, res_y / 2))
+            flag = True
+
+            
+        if(pygame.mouse.get_pos()[0] > res_x / 2):
+            axis -= vector3(0,mouseSens,0)
+            pygame.mouse.set_pos((res_x / 2, res_y / 2))
+            flag = True
+
+
+        if(pygame.mouse.get_pos()[1] > res_y / 2):
+            axis -= vector3(mouseSens,0,0)
+            pygame.mouse.set_pos((res_x / 2, res_y / 2))
+            flag = True
+
+            
+        if(pygame.mouse.get_pos()[1] < res_y / 2):
+            axis += vector3(mouseSens, 0, 0)
+            pygame.mouse.set_pos((res_x / 2, res_y / 2))
+            flag = True
+            
+
         # Moves the object around X, Y, Z
         if (test[pygame.K_s]):
             scene.camera.position -= vector3(0, 0, movementSpeed)
@@ -77,8 +108,11 @@ def main():
             flag = True
         
 
-        # Rotates the object, considering the time passed (not linked to frame rate)
+         # Rotates the object, considering the time passed (not linked to frame rate)
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3())
+        scene.camera.rotation = q * scene.camera.rotation
+        
+        print(q)
 
         scene.render(screen)
 
@@ -88,5 +122,7 @@ def main():
         # Updates the timer, so we we know how long has it been since the last frame
         delta_time = time.time() - prev_time
         prev_time = time.time()
+
+
 
 main()
