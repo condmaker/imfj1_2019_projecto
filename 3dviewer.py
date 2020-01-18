@@ -11,49 +11,55 @@ from color import *
 def main():
     pygame.init()
 
+    # Defining the resolution
     res_x = 1080
     res_y = 720
-
     screen = pygame.display.set_mode((res_x, res_y))
 
+    # Starting the scene
     scene = Scene("3d_Viewer")
     scene.camera = Camera(False, res_x, res_y)
 
+    # Positioning the starting position of the camera
     scene.camera.position += vector3(1, 1, 1)
     scene.camera.position -= vector3(0, 0, 2)
 
-    cube = Object3d("Cube1")
-    cube.scale = vector3(1, 1, 1)
-    cube.position = vector3(1, 1, 1)
-    cube.mesh = Mesh.create_pyr((1, 1, 1), None)
-    cube.material = Material(color(1,0,0,1), "TestMaterial1")
-    scene.add_object(cube)
+    # Defining the first object, a tetrahedron
+    tetahedron = Object3d("Tetahedr1")
+    tetahedron.scale = vector3(1, 1, 1)
+    tetahedron.position = vector3(1, 1, 1)
+    tetahedron.mesh = Mesh.create_pyr((1, 1, 1), None)
+    tetahedron.material = Material(color(1,0,0,1), "TestMaterial1")
+    scene.add_object(tetahedron)
 
-    cube2 = Object3d("Cube2")
-    cube2.position += vector3(0.25, 0.5, 0)
-    cube2.mesh = Mesh.create_pyr((0.5, 1, 1))
-    cube2.material = Material(color(0,1,0,1), "TestMaterial2")
-    cube.add_child(cube2)
+    # Defining the second tetahedron, that is a child of 'cube'
+    tthdr2 = Object3d("Tetahedr2")
+    tthdr2.position += vector3(0.25, 0.5, 0)
+    tthdr2.mesh = Mesh.create_pyr((0.5, 1, 1))
+    tthdr2.material = Material(color(0,1,0,1), "TestMaterial2")
+    tetahedron.add_child(tthdr2)
 
-    cube3 = Object3d("Cube2")
-    cube3.position += vector3(-0.25, 0.5, 0)
-    cube3.mesh = Mesh.create_pyr((0.5, 1, 1))
-    cube3.material = Material(color(0,1,0,1), "TestMaterial2")
-    cube.add_child(cube3)
+    # Defining the third tetahedron, that is also a child of 'cube'
+    tthdr3 = Object3d("Tetahedr2")
+    tthdr3.position += vector3(-0.25, 0.5, 0)
+    tthdr3.mesh = Mesh.create_pyr((0.5, 1, 1))
+    tthdr3.material = Material(color(0,1,0,1), "TestMaterial2")
+    tetahedron.add_child(tthdr3)
     
+    # Defining the angle and axis of the object that will be rotated (normalizing the axis gives a divided by 0 error)
     angle = 15
     axis = vector3(0,0,0)
     #axis.normalize()
     
+    # Starting the delta_time variable so the game runs on time and is not tied to framerate
     delta_time = 0
     prev_time = time.time()
     
     flag = False
 
-    #pygame.event.set_grab(True)
-
     while(True):
 
+        # A flag that verifies if the player has pressed a key, and puts the axis at (0,0,0) position so it doesn't keep moving 
         if (flag):
             axis = vector3(0,0,0)
             flag = False
@@ -68,6 +74,7 @@ def main():
         # Clears the screen with a very dark blue (0, 0, 20)
         screen.fill((0,0,0))
 
+        # Gets a list of all the pressed keys so we can observe actions around them
         test = pygame.key.get_pressed()
 
         # Moves the object around X, Y, Z
@@ -92,27 +99,29 @@ def main():
         
         # Moves the object in relation to the camera
         if (test[pygame.K_w]):
-            cube.position += vector3(0, 0.01, 0)
+            tetahedron.position += vector3(0, 0.01, 0)
             flag = True
         if (test[pygame.K_s]):
-            cube.position -= vector3(0, 0.01, 0)
+            tetahedron.position -= vector3(0, 0.01, 0)
             flag = True
         if (test[pygame.K_a]):
-            cube.position -= vector3(0.01, 0, 0)
+            tetahedron.position -= vector3(0.01, 0, 0)
             flag = True
         if (test[pygame.K_d]):
-            cube.position += vector3(0.01, 0, 0)
+            tetahedron.position += vector3(0.01, 0, 0)
             flag = True
         if (test[pygame.K_q]):
-            cube.position -= vector3(0, 0, 0.01)
+            tetahedron.position -= vector3(0, 0, 0.01)
             flag = True
         if (test[pygame.K_e]):
-            cube.position += vector3(0, 0, 0.01)
+            tetahedron.position += vector3(0, 0, 0.01)
             flag = True
+
+      
 
         # Rotates the object, considering the time passed (not linked to frame rate)
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3())
-        cube.rotation = q * cube.rotation
+        tetahedron.rotation = q * tetahedron.rotation
 
         scene.render(screen)
 

@@ -66,10 +66,10 @@ class Mesh:
         if (mesh == None):
             mesh = Mesh("UnknownPyr")
 
-        Mesh.create_trig(vector3(0, size[1] * 0.5, 0), vector3(size[0] * 0.5, 0, 0), vector3(-size[0] * 0.5, 0, 0), mesh)        # ACB
-        Mesh.create_trig(vector3(0, size[1] * 0.5, 0), vector3(-size[0] * 0.5, 0, 0), vector3(0, 0, size[2] * 0.5), mesh)        # ABD
-        Mesh.create_trig(vector3(0, size[1] * 0.5, 0), vector3(size[0] * 0.5, 0, 0), vector3(0, 0, size[2] * 0.5), mesh)         # ACD
-        Mesh.create_trig(vector3(-size[0] * 0.5, 0, 0), vector3(size[0] * 0.5, 0, 0), vector3(0, 0, size[2] * 0.5), mesh)        # BCD
+        Mesh.create_trig(vector3(0, size[1] * 0.5, 0), vector3(size[0] * 0.5, 0, 0), vector3(-size[0] * 0.5, 0, 0), mesh)  # ACB
+        Mesh.create_trig(vector3(0, size[1] * 0.5, 0), vector3(-size[0] * 0.5, 0, 0), vector3(0, 0, size[2] * 0.5), mesh)  # ABD
+        Mesh.create_trig(vector3(0, size[1] * 0.5, 0), vector3(size[0] * 0.5, 0, 0), vector3(0, 0, size[2] * 0.5), mesh)   # ACD
+        Mesh.create_trig(vector3(-size[0] * 0.5, 0, 0), vector3(size[0] * 0.5, 0, 0), vector3(0, 0, size[2] * 0.5), mesh)  # BCD
 
         return mesh
 
