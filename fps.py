@@ -13,6 +13,10 @@ def main():
 
     mouseSens = 25
 
+    '''x_axis = vector3(1,0,0)
+    y_axis = vector3(0,1,0)
+    z_axis = vector3(0,0,1)'''
+
     res_x = 1080
     res_y = 720
 
@@ -67,53 +71,53 @@ def main():
         #axis = vector3(0,0,0)
 
         pygame.mouse.set_visible(True)
-        pygame.event.set_grab(True)
 
         if(pygame.mouse.get_pos()[0] < res_x / 2):
-            axis += vector3(0,mouseSens,0)
+            axis += (scene.camera.up())
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
             flag = True
-
-            
+          
         if(pygame.mouse.get_pos()[0] > res_x / 2):
-            axis -= vector3(0,mouseSens,0)
+            axis -= scene.camera.up() 
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
             flag = True
-
 
         if(pygame.mouse.get_pos()[1] > res_y / 2):
-            axis -= vector3(mouseSens,0,0)
+            axis -= scene.camera.right()
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
             flag = True
-
-            
+        
         if(pygame.mouse.get_pos()[1] < res_y / 2):
-            axis += vector3(mouseSens, 0, 0)
+            axis += scene.camera.right()
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
             flag = True
             
 
         # Moves the object around X, Y, Z
         if (test[pygame.K_s]):
-            scene.camera.position -= vector3(0, 0, movementSpeed)
+            scene.camera.position -= scene.camera.forward() * movementSpeed
             flag = True
         if (test[pygame.K_a]):
-            scene.camera.position -= vector3(movementSpeed, 0, 0)
+            scene.camera.position -= scene.camera.right() * movementSpeed
             flag = True
         if (test[pygame.K_d]):
-            scene.camera.position += vector3(movementSpeed, 0, 0)
+            scene.camera.position += scene.camera.right() * movementSpeed
             flag = True
         if (test[pygame.K_w]):
-            scene.camera.position += vector3(0, 0, movementSpeed)
+            scene.camera.position += scene.camera.forward() * movementSpeed
             flag = True
         
 
+
+        if(axis.magnitude() != 0):
+            axis = axis.normalized() * mouseSens
+
+           
          # Rotates the object, considering the time passed (not linked to frame rate)
-        q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3())
+        q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
         scene.camera.rotation = q * scene.camera.rotation
         
-        print(q)
-
+      
         scene.render(screen)
 
         # Swaps the back and front buffer, effectively displaying what we rendered

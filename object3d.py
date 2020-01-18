@@ -3,6 +3,7 @@ from vector3 import *
 from quaternion import *
 
 class Object3d:
+    
     def __init__(self, name):
         self.name = name
         self.position = vector3()
@@ -16,6 +17,7 @@ class Object3d:
         return Object3d.get_prs_matrix(self.position, self.rotation, self.scale)
 
     def render(self, screen, clip_matrix):
+
         world_matrix = self.get_matrix()
         
         mesh_matrix = world_matrix @ clip_matrix
@@ -40,6 +42,7 @@ class Object3d:
 
     def right(self):
         return vector3.from_np(vector3(1,0,0).to_np4(0) @ self.get_matrix())
+
 
     @staticmethod
     def get_prs_matrix(position, rotation, scale):
