@@ -36,7 +36,6 @@ def main():
     scene.add_object(cube)
 
 
-    
     angle = 15
     axis = vector3(0,0,0)
     #axis.normalize()
@@ -45,7 +44,7 @@ def main():
     prev_time = time.time()
     
     flag = False
-
+    objflag = True
     #pygame.event.set_grab(True)
 
     while(True):
@@ -107,17 +106,24 @@ def main():
             scene.camera.position += scene.camera.forward() * movementSpeed
             flag = True
         
-
-
         if(axis.magnitude() != 0):
             axis = axis.normalized() * mouseSens
 
            
-         # Rotates the object, considering the time passed (not linked to frame rate)
+        # Rotates the object, considering the time passed (not linked to frame rate)
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
         scene.camera.rotation = q * scene.camera.rotation
         
-      
+        # Verifies if the cube and camera dot product is negative, and if it is, does not render the object
+        if (dot_product(scene.camera.forward(), cube.forward()) < 0 and objflag):
+            scene.objects.remove(cube)
+            print("dog")
+            objflag = False
+        else:
+            objflag = True
+            if (cube not in scene.objects):
+                scene.add_object(cube)
+        
         scene.render(screen)
 
         # Swaps the back and front buffer, effectively displaying what we rendered
