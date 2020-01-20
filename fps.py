@@ -5,13 +5,13 @@ import numpy
 
 from jsonreader import *
 from scene import *
-from scene import *
 from object3d import *
 from mesh import *
 from material import *
 from color import *
 
 def main():
+    
     pygame.init()
 
     mouseSens = 25
@@ -31,6 +31,11 @@ def main():
     scene.camera.position += vector3(1, 1, 1)
     scene.camera.position -= vector3(0, 0, 2)
 
+
+
+# ----- Objects in the Scene -----
+
+    #Cube - Blue
     cube = Object3d("Cube1")
     cube.scale = vector3(1, 1, 1)
     cube.position = vector3(3, 1, 3)
@@ -39,21 +44,21 @@ def main():
     cube.mesh = m
     cube.material = Material(color(0,1,1,1), "TestMaterial1", 0)
     scene.add_object(cube)
-
     objects.append(cube)
 
+    #Pyramid - Orange
     pyr = Object3d("Pyramid1")
     pyr.scale = vector3(1, 1, 1)
     pyr.position = vector3(1, 1, 1)
     p = Mesh()
     p.polygons = retrieve_points("pyramid", 2)
     pyr.mesh = p
-    pyr.material = Material(color(1,0.5,0,1), "TestMaterial3s", 0)
+    pyr.material = Material(color(1,0.5,0,1), "TestMaterial2s", 0)
     scene.add_object(pyr)
-
     objects.append(pyr)
 
-    pyr = Object3d("Pyramid1")
+    #Pyramid - Green
+    pyr = Object3d("Pyramid2")
     pyr.scale = vector3(1, 4, 1)
     pyr.position = vector3(-2, 4, 1)
     p = Mesh()
@@ -61,19 +66,21 @@ def main():
     pyr.mesh = p
     pyr.material = Material(color(0,0.5,0,1), "TestMaterial3s", 0)
     scene.add_object(pyr)
-
     objects.append(pyr)
 
-    pyr = Object3d("Pyramid1")
+
+    #Pyramid - Grey
+    pyr = Object3d("Pyramid3")
     pyr.scale = vector3(1, 1, 1)
     pyr.position = vector3(-3, 1, 2)
     p = Mesh()
     p.polygons = retrieve_points("pyramid", 2)
     pyr.mesh = p
-    pyr.material = Material(color(0.5,0.5,0.5,1), "TestMaterial3s", 0)
+    pyr.material = Material(color(0.5,0.5,0.5,1), "TestMaterial4s", 0)
     scene.add_object(pyr)
-
     objects.append(pyr)
+    
+
 
     angle = 15
     axis = vector3(0,0,0)
@@ -86,6 +93,9 @@ def main():
     objflag = True
     #pygame.event.set_grab(True)
 
+
+# ----- Game ----- 
+    
     while(True):
         
         for event in pygame.event.get():
@@ -106,23 +116,32 @@ def main():
 
         axis = vector3(0,0,0)
 
+        #Player looks to the left
         if(pygame.mouse.get_pos()[0] < res_x / 2):
             axis += vector3(0,1,0)
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
               
+        #Player looks to the right      
         if(pygame.mouse.get_pos()[0] > res_x / 2):
             axis -= vector3(0,1,0)
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
             
+        #Player looks down
         if(pygame.mouse.get_pos()[1] > res_y / 2):
             axis -= scene.camera.right()
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
-              
+      
+        #Player looks up
         if(pygame.mouse.get_pos()[1] < res_y / 2):
             axis += scene.camera.right()
-            pygame.mouse.set_pos((res_x / 2, res_y / 2))      
+            pygame.mouse.set_pos((res_x / 2, res_y / 2))    
             
+        #Locks play to the ground / Ensures player can't fly around   
         forwardMovementVector = vector3(scene.camera.forward().x,0,scene.camera.forward().z)
+
+        #Adds mouse sensibility to the camera movement
+        if(axis.magnitude() != 0):
+            axis = axis.normalized() * mouseSens 
 
         # Moves the object around X, Y, Z
         if (test[pygame.K_s]):
@@ -137,10 +156,7 @@ def main():
         if (test[pygame.K_w]):
             scene.camera.position += forwardMovementVector * movementSpeed
             flag = True
-        
-        if(axis.magnitude() != 0):
-            axis = axis.normalized() * mouseSens 
-
+   
            
         # Rotates the object, considering the time passed (not linked to frame rate)
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
@@ -157,7 +173,6 @@ def main():
                 objflag = True
                 if (obj not in scene.objects):
                     scene.add_object(obj)
-
 
         scene.render(screen)
 

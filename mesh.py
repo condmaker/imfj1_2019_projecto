@@ -18,7 +18,7 @@ class Mesh:
 
     def render(self, screen, matrix, material):
         c = material.color.tuple3()        
-
+        
 
         for poly in self.polygons:
             tpoly = []

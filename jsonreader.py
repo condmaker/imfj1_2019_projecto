@@ -6,7 +6,7 @@ def retrieve_points(object, scale):
   
     polygon = []
     
-    #Opens file and fills fileDisct with its contents
+    #Opens file and fills fileDict with its contents
     with open('objects.json') as f:
         fileDict = json.load(f)
     try:
