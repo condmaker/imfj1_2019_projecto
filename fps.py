@@ -49,6 +49,7 @@ def main():
     #pygame.event.set_grab(True)
 
     while(True):
+        
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 return
@@ -87,10 +88,11 @@ def main():
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
             
             
+        forwardMovementVector = vector3(scene.camera.forward().x,0,scene.camera.forward().z)
 
         # Moves the object around X, Y, Z
         if (test[pygame.K_s]):
-            scene.camera.position -= scene.camera.forward() * movementSpeed
+            scene.camera.position -= forwardMovementVector * movementSpeed
             flag = True
         if (test[pygame.K_a]):
             scene.camera.position -= scene.camera.right() * movementSpeed
@@ -99,7 +101,7 @@ def main():
             scene.camera.position += scene.camera.right() * movementSpeed
             flag = True
         if (test[pygame.K_w]):
-            scene.camera.position += scene.camera.forward() * movementSpeed
+            scene.camera.position += forwardMovementVector * movementSpeed
             flag = True
         
         if(axis.magnitude() != 0):
