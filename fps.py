@@ -3,6 +3,7 @@ import pygame.freetype
 import time
 import numpy 
 
+from jsonreader import *
 from scene import *
 from object3d import *
 from mesh import *
@@ -13,10 +14,6 @@ def main():
     pygame.init()
 
     mouseSens = 25
-
-    '''x_axis = vector3(1,0,0)
-    y_axis = vector3(0,1,0)
-    z_axis = vector3(0,0,1)'''
 
     res_x = 1080
     res_y = 720
@@ -30,12 +27,40 @@ def main():
     scene.camera.position -= vector3(0, 0, 2)
 
 
-    cube = Object3d("Cube1")
-    cube.scale = vector3(1, 1, 1)
-    cube.position = vector3(1, 1, 1)
-    cube.mesh = Mesh.create_pyr((1, 1, 1), None)
-    cube.material = Material(color(1,0,0,1), "TestMaterial1")
-    scene.add_object(cube)
+    pir = Object3d("Cube1")
+    pir.scale = vector3(1, 1, 1)
+    pir.position = vector3(1, 1, 1)
+    pir.mesh = Mesh.create_pyr((1, 1, 1), None)
+    pir.material = Material(color(0,0,0,1), "TestMaterial1", 0)
+    scene.add_object(pir)
+
+
+    pir1 = Object3d("Cube2")
+    pir1.scale = vector3(1, 1, 1)
+    pir1.position = vector3(1, 1, 1)
+    pir1.mesh = Mesh.create_pyr((1, 1, 1), None)
+    pir1.material = Material(color(1,0,0,1), "TestMaterial1")
+    scene.add_object(pir1)
+
+
+    c = Object3d("Cube2")
+    c.scale = vector3(1, 1, 1)
+    c.position = vector3(1, 1, 1)
+    m = Mesh()
+    m.polygons = retrieve_points("cube", 2)   
+    c.mesh = m
+    c.material = Material(color(1,0,0,1), "TestMaterial1")
+    scene.add_object(c)
+
+
+    c = Object3d("Cube2")
+    c.scale = vector3(1, 1, 1)
+    c.position = vector3(3, 3, 3)
+    m = Mesh()
+    m.polygons = retrieve_points("cube", 2)   
+    c.mesh = m
+    c.material = Material(color(1,0,0,1), "TestMaterial1")
+    scene.add_object(c)
 
 
     angle = 15
@@ -59,7 +84,7 @@ def main():
                     return
 
         # Clears the screen with a very dark blue (0, 0, 20)
-        screen.fill((0,0,0))
+        screen.fill((5,5,15))
 
         test = pygame.key.get_pressed()
 
@@ -114,10 +139,10 @@ def main():
         scene.camera.rotation = scene.camera.rotation * q 
 
         # The PRS Matrix with the rotation values around the camera's position.
-        objMatrix = cube.get_prs_matrix(vector3(0, 0, 0), quaternion(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z), cube.scale)
+        objMatrix = pir.get_prs_matrix(vector3(0, 0, 0), quaternion(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z), pir.scale)
 
         # The cube normal, transformed to a 4D vector in order to be multiplied with the PRS Matrix
-        objNormal = cube.forward().to_np4()
+        objNormal = pir.forward().to_np4()
         # The PRS Matrix converted into an array
         objMatrixArray = np.array(objMatrix)
 
@@ -135,13 +160,13 @@ def main():
         # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
         if (dot_product(scene.camera.forward().normalized(), - detectVect2.normalized()) < 0):
             if (objflag):
-                scene.objects.remove(cube)
+                scene.objects.remove(pir)
                 print("dog")
                 objflag = False
         else:
             objflag = True
-            if (cube not in scene.objects):
-                scene.add_object(cube)
+            if (pir not in scene.objects):
+                scene.add_object(pir)
         scene.render(screen)
 
         # Swaps the back and front buffer, effectively displaying what we rendered
