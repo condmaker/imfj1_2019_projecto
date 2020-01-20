@@ -5,6 +5,7 @@ import numpy
 
 from jsonreader import *
 from scene import *
+from scene import *
 from object3d import *
 from mesh import *
 from material import *
@@ -18,6 +19,10 @@ def main():
     res_x = 1080
     res_y = 720
 
+    #List of all possible objects
+    objects = []
+
+
     screen = pygame.display.set_mode((res_x, res_y))
 
     scene = Scene("3d_Viewer")
@@ -26,42 +31,49 @@ def main():
     scene.camera.position += vector3(1, 1, 1)
     scene.camera.position -= vector3(0, 0, 2)
 
-
-    pir = Object3d("Cube1")
-    pir.scale = vector3(1, 1, 1)
-    pir.position = vector3(1, 1, 1)
-    pir.mesh = Mesh.create_pyr((1, 1, 1), None)
-    pir.material = Material(color(0,0,0,1), "TestMaterial1", 0)
-    scene.add_object(pir)
-
-
-    pir1 = Object3d("Cube2")
-    pir1.scale = vector3(1, 1, 1)
-    pir1.position = vector3(1, 1, 1)
-    pir1.mesh = Mesh.create_pyr((1, 1, 1), None)
-    pir1.material = Material(color(1,0,0,1), "TestMaterial1")
-    scene.add_object(pir1)
-
-
-    c = Object3d("Cube2")
-    c.scale = vector3(1, 1, 1)
-    c.position = vector3(1, 1, 1)
+    cube = Object3d("Cube1")
+    cube.scale = vector3(1, 1, 1)
+    cube.position = vector3(3, 1, 3)
     m = Mesh()
-    m.polygons = retrieve_points("cube", 2)   
-    c.mesh = m
-    c.material = Material(color(1,0,0,1), "TestMaterial1")
-    scene.add_object(c)
+    m.polygons = retrieve_points("cube", 2)
+    cube.mesh = m
+    cube.material = Material(color(0,1,1,1), "TestMaterial1", 0)
+    scene.add_object(cube)
 
+    objects.append(cube)
 
-    c = Object3d("Cube2")
-    c.scale = vector3(1, 1, 1)
-    c.position = vector3(3, 3, 3)
-    m = Mesh()
-    m.polygons = retrieve_points("cube", 2)   
-    c.mesh = m
-    c.material = Material(color(1,0,0,1), "TestMaterial1")
-    scene.add_object(c)
+    pyr = Object3d("Pyramid1")
+    pyr.scale = vector3(1, 1, 1)
+    pyr.position = vector3(1, 1, 1)
+    p = Mesh()
+    p.polygons = retrieve_points("pyramid", 2)
+    pyr.mesh = p
+    pyr.material = Material(color(1,0.5,0,1), "TestMaterial3s", 0)
+    scene.add_object(pyr)
 
+    objects.append(pyr)
+
+    pyr = Object3d("Pyramid1")
+    pyr.scale = vector3(1, 4, 1)
+    pyr.position = vector3(-2, 4, 1)
+    p = Mesh()
+    p.polygons = retrieve_points("pyramid", 2)
+    pyr.mesh = p
+    pyr.material = Material(color(0,0.5,0,1), "TestMaterial3s", 0)
+    scene.add_object(pyr)
+
+    objects.append(pyr)
+
+    pyr = Object3d("Pyramid1")
+    pyr.scale = vector3(1, 1, 1)
+    pyr.position = vector3(-3, 1, 2)
+    p = Mesh()
+    p.polygons = retrieve_points("pyramid", 2)
+    pyr.mesh = p
+    pyr.material = Material(color(0.5,0.5,0.5,1), "TestMaterial3s", 0)
+    scene.add_object(pyr)
+
+    objects.append(pyr)
 
     angle = 15
     axis = vector3(0,0,0)
@@ -97,22 +109,18 @@ def main():
         if(pygame.mouse.get_pos()[0] < res_x / 2):
             axis += vector3(0,1,0)
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
-           
-          
+              
         if(pygame.mouse.get_pos()[0] > res_x / 2):
             axis -= vector3(0,1,0)
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
             
-
         if(pygame.mouse.get_pos()[1] > res_y / 2):
             axis -= scene.camera.right()
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
-            
-        
+              
         if(pygame.mouse.get_pos()[1] < res_y / 2):
             axis += scene.camera.right()
-            pygame.mouse.set_pos((res_x / 2, res_y / 2))
-            
+            pygame.mouse.set_pos((res_x / 2, res_y / 2))      
             
         forwardMovementVector = vector3(scene.camera.forward().x,0,scene.camera.forward().z)
 
@@ -138,35 +146,19 @@ def main():
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
         scene.camera.rotation = scene.camera.rotation * q 
 
-        # The PRS Matrix with the rotation values around the camera's position.
-        objMatrix = pir.get_prs_matrix(vector3(0, 0, 0), quaternion(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z), pir.scale)
+        # Verifies if each object and rotated camera normals dot product is negative, and if it is, does not render the object
+        for obj in objects:
+            if (dot_product(scene.camera.forward().normalized(), - (obj.position - scene.camera.position).normalized()) > -0.5):
+                if (objflag):
+                    if (obj in scene.objects):
+                        scene.objects.remove(obj)
+                        objflag = False
+            else:
+                objflag = True
+                if (obj not in scene.objects):
+                    scene.add_object(obj)
 
-        # The cube normal, transformed to a 4D vector in order to be multiplied with the PRS Matrix
-        objNormal = pir.forward().to_np4()
-        # The PRS Matrix converted into an array
-        objMatrixArray = np.array(objMatrix)
 
-        # This variable will do the multiplication between objNormal and objMatrixArray to create the rotated vector. 
-        detectVect = vector3(numpy.matmul(objNormal, objMatrixArray).tolist())
-
-        # Variables with the x, y and z values of the vector
-        arg1 = detectVect.x[0]
-        arg2 = detectVect.x[1]
-        arg3 = detectVect.x[2]
-
-        # Transformation of the rotated vector into vector3, so that it can be used in the dot product between the camera normal.
-        detectVect2 = vector3(arg1, arg2, arg3)
-        
-        # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
-        if (dot_product(scene.camera.forward().normalized(), - detectVect2.normalized()) < 0):
-            if (objflag):
-                scene.objects.remove(pir)
-                print("dog")
-                objflag = False
-        else:
-            objflag = True
-            if (pir not in scene.objects):
-                scene.add_object(pir)
         scene.render(screen)
 
         # Swaps the back and front buffer, effectively displaying what we rendered
@@ -175,7 +167,5 @@ def main():
         # Updates the timer, so we we know how long has it been since the last frame
         delta_time = time.time() - prev_time
         prev_time = time.time()
-
-
 
 main()
