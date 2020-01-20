@@ -113,27 +113,22 @@ def main():
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
         scene.camera.rotation = scene.camera.rotation * q 
 
-        # The PRS Matrix with the rotation values around the camera's position.
-        objMatrix = cube.get_prs_matrix(vector3(0, 0, 0), quaternion(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z), cube.scale)
+        #print(detectVect2.normalized())
+        pointVect = (cube.position).to_np4()
+        mult1 = numpy.matmul(pointVect, scene.camera.get_camera_matrix())
+        mult2 = vector3(numpy.matmul(mult1, scene.camera.get_projection_matrix()))
 
-        # The cube normal, transformed to a 4D vector in order to be multiplied with the PRS Matrix
-        objNormal = cube.forward().to_np4()
-        # The PRS Matrix converted into an array
-        objMatrixArray = np.array(objMatrix)
+        argv1 = mult2.x[0]
+        argv2 = mult2.x[1]
+        argv3 = mult2.x[2]
+  
+        final = vector3(argv1 + res_x/2, argv2 + res_y/2, argv3)
 
-        # This variable will do the multiplication between objNormal and objMatrixArray to create the rotated vector. 
-        detectVect = vector3(numpy.matmul(objNormal, objMatrixArray).tolist())
-
-        # Variables with the x, y and z values of the vector
-        arg1 = detectVect.x[0]
-        arg2 = detectVect.x[1]
-        arg3 = detectVect.x[2]
-
-        # Transformation of the rotated vector into vector3, so that it can be used in the dot product between the camera normal.
-        detectVect2 = vector3(arg1, arg2, arg3)
-        
+        print(final)
+        #y = vector3 * camera matrix * projection matrix
+        #print(cube.position - scene.camera.position)
         # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
-        if (dot_product(scene.camera.forward().normalized(), - detectVect2.normalized()) < 0):
+        if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position)) > 0 or (final.x < res_x * - scene.camera.fov * final.y/90 or final.x > res_x * scene.camera.fov * final.y/80)):
             if (objflag):
                 scene.objects.remove(cube)
                 print("dog")
@@ -150,7 +145,5 @@ def main():
         # Updates the timer, so we we know how long has it been since the last frame
         delta_time = time.time() - prev_time
         prev_time = time.time()
-
-
 
 main()
