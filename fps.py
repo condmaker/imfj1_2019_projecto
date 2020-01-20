@@ -114,7 +114,7 @@ def main():
         scene.camera.rotation = scene.camera.rotation * q 
 
         # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
-        if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position)) > 0):
+        if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position)) > -0.5):
             if (objflag):
                 scene.objects.remove(cube)
                 print("dog")
