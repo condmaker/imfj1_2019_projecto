@@ -12,9 +12,10 @@ class Scene:
     def render(self, screen):
         camera_matrix = self.camera.get_camera_matrix()
         projection_matrix = self.camera.get_projection_matrix()
+        camera_normal = self.camera.forward()
 
         clip_matrix = camera_matrix @ projection_matrix
 
         for obj in self.objects:
-            obj.render(screen, clip_matrix)
+            obj.render(screen, clip_matrix, camera_normal)
 

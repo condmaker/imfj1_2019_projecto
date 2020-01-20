@@ -19,6 +19,7 @@ def main():
     # Starting the scene
     scene = Scene("3d_Viewer")
     scene.camera = Camera(False, res_x, res_y)
+    global scene
 
     # Positioning the starting position of the camera
     scene.camera.position += vector3(1, 1, 1)

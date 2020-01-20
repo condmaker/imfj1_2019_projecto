@@ -24,7 +24,7 @@ def main():
     screen = pygame.display.set_mode((res_x, res_y))
 
     scene = Scene("3d_Viewer")
-    scene.camera = Camera(False, res_x, res_y)
+    scene.camera = Camera(False, res_x, res_y) 
 
     scene.camera.position += vector3(1, 1, 1)
     scene.camera.position -= vector3(0, 0, 2)
@@ -123,7 +123,8 @@ def main():
             objflag = True
             if (cube not in scene.objects):
                 scene.add_object(cube)
-        scene.render(screen)
+                
+        scene.render(screen) 
 
         # Swaps the back and front buffer, effectively displaying what we rendered
         pygame.display.flip()
