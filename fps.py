@@ -113,22 +113,10 @@ def main():
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
         scene.camera.rotation = scene.camera.rotation * q 
 
-        #print(detectVect2.normalized())
-        pointVect = (cube.position).to_np4()
-        y = pointVect @ scene.camera.get_camera_matrix() @ scene.camera.get_projection_matrix()
-
-        arg1 = y[0]
-        arg2 = y[1]
-        arg3 = y[2]
-
-        y2 = vector3(arg1, arg2, arg3)
-        #print(y2)
-
-        #print(cube.position - scene.camera.position)
         # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
         if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position)) > 0):
             if (objflag):
-                scene.objects.remove(cube, True)
+                scene.objects.remove(cube)
                 print("dog")
                 objflag = False
         else:
