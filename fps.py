@@ -28,6 +28,7 @@ def main():
     scene.camera.position += vector3(1, 1, 1)
     scene.camera.position -= vector3(0, 0, 2)
 
+
     cube = Object3d("Cube1")
     cube.scale = vector3(1, 1, 1)
     cube.position = vector3(1, 1, 1)
@@ -49,11 +50,6 @@ def main():
     #pygame.event.set_grab(True)
 
     while(True):
-
-        if (flag):
-            axis = vector3(0,0,0)
-            flag = False
-
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 return
@@ -68,29 +64,29 @@ def main():
 
         movementSpeed = 0.01
 
-        #axis = vector3(0,0,0)
-
         pygame.mouse.set_visible(True)
 
+        axis = vector3(0,0,0)
+
         if(pygame.mouse.get_pos()[0] < res_x / 2):
-            axis += (scene.camera.up())
+            axis += vector3(0,1,0)
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
-            flag = True
+           
           
         if(pygame.mouse.get_pos()[0] > res_x / 2):
-            axis -= scene.camera.up() 
+            axis -= vector3(0,1,0)
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
-            flag = True
+            
 
         if(pygame.mouse.get_pos()[1] > res_y / 2):
             axis -= scene.camera.right()
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
-            flag = True
+            
         
         if(pygame.mouse.get_pos()[1] < res_y / 2):
             axis += scene.camera.right()
             pygame.mouse.set_pos((res_x / 2, res_y / 2))
-            flag = True
+            
             
 
         # Moves the object around X, Y, Z
@@ -110,14 +106,14 @@ def main():
 
 
         if(axis.magnitude() != 0):
-            axis = axis.normalized() * mouseSens
+            axis = axis.normalized() * mouseSens 
 
            
          # Rotates the object, considering the time passed (not linked to frame rate)
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
-        scene.camera.rotation = q * scene.camera.rotation
-        
-      
+        scene.camera.rotation =scene.camera.rotation * q 
+
+
         scene.render(screen)
 
         # Swaps the back and front buffer, effectively displaying what we rendered
