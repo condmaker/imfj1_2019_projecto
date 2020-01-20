@@ -1,6 +1,7 @@
 import pygame
 import pygame.freetype
 import time
+import numpy 
 
 from scene import *
 from object3d import *
@@ -110,10 +111,27 @@ def main():
         q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3()) 
         scene.camera.rotation = scene.camera.rotation * q 
 
-        #scene.camera.rotation = q * scene.camera.rotation
+        # The PRS Matrix with the rotation values around the camera's position.
+        objMatrix = cube.get_prs_matrix(vector3(0, 0, 0), quaternion(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z), cube.scale)
+
+        # The cube normal, transformed to a 4D vector in order to be multiplied with the PRS Matrix
+        objNormal = cube.forward().to_np4()
+        # The PRS Matrix converted into an array
+        objMatrixArray = np.array(objMatrix)
+
+        # This variable will do the multiplication between objNormal and objMatrixArray to create the rotated vector. 
+        detectVect = vector3(numpy.matmul(objNormal, objMatrixArray).tolist())
+
+        # Variables with the x, y and z values of the vector
+        arg1 = detectVect.x[0]
+        arg2 = detectVect.x[1]
+        arg3 = detectVect.x[2]
+
+        # Transformation of the rotated vector into vector3, so that it can be used in the dot product between the camera normal.
+        detectVect2 = vector3(arg1, arg2, arg3)
         
-        # Verifies if the cube and camera dot product is negative, and if it is, does not render the object
-        if (dot_product(scene.camera.forward(), cube.forward() - scene.camera.position) < 0):
+        # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
+        if (dot_product(scene.camera.forward().normalized(), - detectVect2.normalized()) < 0):
             if (objflag):
                 scene.objects.remove(cube)
                 print("dog")
