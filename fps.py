@@ -3,6 +3,8 @@ import pygame.freetype
 import time
 import numpy 
 
+from jsonreader import *
+from scene import *
 from scene import *
 from object3d import *
 from mesh import *
@@ -33,7 +35,9 @@ def main():
     cube = Object3d("Cube1")
     cube.scale = vector3(1, 1, 1)
     cube.position = vector3(1, 1, 1)
-    cube.mesh = Mesh.create_pyr((1, 1, 1), None)
+    m = Mesh()
+    m.polygons = retrieve_points("cube", 2)
+    cube.mesh = m
     cube.material = Material(color(1,0,0,1), "TestMaterial1")
     scene.add_object(cube)
 
@@ -114,10 +118,9 @@ def main():
         scene.camera.rotation = scene.camera.rotation * q 
 
         # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
-        if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position)) > 0):
+        if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position)) > -0.5):
             if (objflag):
                 scene.objects.remove(cube)
-                print("dog")
                 objflag = False
         else:
             objflag = True
