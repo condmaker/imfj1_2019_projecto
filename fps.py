@@ -41,6 +41,14 @@ def main():
     cube.material = Material(color(1,0,0,1), "TestMaterial1")
     scene.add_object(cube)
 
+    pyr = Object3d("Pyramid1")
+    pyr.scale = vector3(1, 1, 1)
+    pyr.position = vector3(1, 1, 1)
+    p = Mesh()
+    p.polygons = retrieve_points("pyramid", 2)
+    pyr.mesh = p
+    pyr.material = Material(color(1,1,0,1), "TestMaterial2")
+    scene.add_object(pyr)
 
     angle = 15
     axis = vector3(0,0,0)
@@ -118,7 +126,7 @@ def main():
         scene.camera.rotation = scene.camera.rotation * q 
 
         # Verifies if the cube and rotated camera normals dot product is negative, and if it is, does not render the object
-        if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position)) > -0.5):
+        if (dot_product(scene.camera.forward().normalized(), - (cube.position - scene.camera.position).normalized()) > -0.5):
             if (objflag):
                 scene.objects.remove(cube)
                 objflag = False
